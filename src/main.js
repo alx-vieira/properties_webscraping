@@ -7,7 +7,6 @@ const urlalvo = "https://www.vivareal.com.br/venda/sp/sao-paulo/granja_comercial
 const main = async () => {
     
     const browser = await puppeteer.launch({
-        ignoreDefaultArgs: ['--disable-extensions'],
         args: ['--no-sandbox'],
         // headless: false
     });
