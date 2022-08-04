@@ -6,7 +6,9 @@ async function linksPg(linkPesquisa) {
     const dados = [];
 
     const browser = await puppeteer.launch({
-        defaultViewport: null
+        defaultViewport: null,
+        args: ['--no-sandbox'],
+        headless: true
     });
 
     const page = await browser.newPage();
