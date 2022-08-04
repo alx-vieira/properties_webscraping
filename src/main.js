@@ -8,7 +8,7 @@ const main = async () => {
     
     const browser = await puppeteer.launch({
         args: ['--no-sandbox'],
-        // headless: false
+        headless: true
     });
     const page = await browser.newPage();
     const urls = await linksPg(urlalvo);
