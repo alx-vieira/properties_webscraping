@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 
 const urlalvo = "https://www.vivareal.com.br/venda/sp/sao-paulo/granja_comercial/#area-desde=20000";
 
-async function linkImoveis(linkPesquisa) {
+async function linksPg(linkPesquisa) {
     const dados = [];
 
     const browser = await puppeteer.launch({
@@ -23,8 +23,11 @@ async function linkImoveis(linkPesquisa) {
         dados.push(olnk);
     });
 
-    await console.log(dados);
+    // await console.log(dados);
+    return dados;
 
 }
 
-linkImoveis(urlalvo);
+// linkImoveis(urlalvo);
+
+module.exports = linksPg;

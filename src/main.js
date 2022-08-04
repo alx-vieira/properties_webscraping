@@ -1,6 +1,17 @@
 const puppeteer = require('puppeteer');
 
-const urlalvo = 'https://www.vivareal.com.br/imovel/fazenda---sitio-3-quartos-serra-da-cantareira-zona-norte-sao-paulo-com-garagem-60000m2-venda-RS1200000-id-2572161422/';
+const linksPg = require('./linksPg');
+
+const urlalvo = "https://www.vivareal.com.br/venda/sp/sao-paulo/granja_comercial/#area-desde=20000";
+
+const main = async () => {
+    const urls = await linksPg(urlalvo);
+    console.log(urls);
+}
+
+main();
+
+/* const urlalvo = 'https://www.vivareal.com.br/imovel/fazenda---sitio-3-quartos-serra-da-cantareira-zona-norte-sao-paulo-com-garagem-60000m2-venda-RS1200000-id-2572161422/';
 
 let detalhesImovel = [];
 
@@ -19,14 +30,6 @@ const wspg = async () => {
     const codigoBruto = await page.$eval('.title__code', (el) => el.textContent);
     const codigo = codigoBruto.slice(5);
     const urlImovel = urlalvo;
-    // const detalhesArray = await page.$$('.features');
-    // for (let detalhesElement of detalhesArray) {
-        /* let title = await detalhesElement.$eval('.features__item', (el) => el.value);
-        let detalhesImovel = await detalhesElement.$eval('.features__item', (el) => el.textContent);
-        let detalhe = detalhesImovel.trim();
-        detalhesArray.push(title, detalhe); */
-    // }
-
     const detalhesArray = await page.$$eval('.features__item', li => {
         return li.map(text => text.title +' '+ text.textContent.trim());
     });
@@ -45,4 +48,4 @@ const wspg = async () => {
 
 };
 
-wspg();
+wspg(); */
