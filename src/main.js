@@ -8,6 +8,7 @@ const main = async () => {
     
     const browser = await puppeteer.launch({
         ignoreDefaultArgs: ['--disable-extensions'],
+        args: ['--no-sandbox'],
         // headless: false
     });
     const page = await browser.newPage();
