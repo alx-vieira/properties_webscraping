@@ -19,4 +19,4 @@ const schema = new Schema<PropertieType>({
 
 const modelName: string = 'Propertie';
 
-export const User = mongoose.model('Propertie', schema);
+export const Propertie = mongoose.model('Propertie', schema);
