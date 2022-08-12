@@ -1,8 +1,21 @@
-const puppeteer = require('puppeteer');
+import puppeteer from 'puppeteer';
 
-const linksPg = require('./linksPg');
+import linksPg from './linksPg.js';
 
 const urlalvo = "https://www.vivareal.com.br/venda/sp/sao-paulo/granja_comercial/#area-desde=20000";
+
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
+
+const propertieSchema = new Schema({
+  nome: String, // String is shorthand for {type: String}
+  valor: String,
+  codigo: String,
+  urlImovel: String,
+  detalhesImovel: [String],
+});
+
+const Propertie = mongoose.model('Propertie', propertieSchema);
 
 const main = async () => {
     
@@ -12,6 +25,7 @@ const main = async () => {
     });
     const page = await browser.newPage();
     const urls = await linksPg(urlalvo);
+    await mongoose.connect('mongodb://localhost:27017/properties_webscraping');
     for(let i = 0; i < urls.length; ++i) {
         let detalhesImovel = [];
         const url = urls[i];
@@ -19,60 +33,42 @@ const main = async () => {
         await page.waitForTimeout(3000);
         const nomeBruto = await page.$eval('.title__title', (el) => el.textContent);
         const nome = nomeBruto.trim();
-        const valor = await page.$eval('.price__price-info', (el) => el.textContent);
+        const valorBruto = await page.$eval('.price__price-info', (el) => el.textContent);
+        const valor = valorBruto.trim();
         const codigoBruto = await page.$eval('.title__code', (el) => el.textContent);
         const codigo = codigoBruto.slice(5);
         const urlImovel = url;
         const detalhesArray = await page.$$eval('.features__item', li => {
-            return li.map(text => text.title +' '+ text.textContent.trim());
+            return li.map(text => text.title +': '+ text.textContent.trim());
         });
 
         for (let detalhesElement of detalhesArray) {
             detalhesImovel.push(detalhesElement);
         }    
-        await console.log("NOME: " + nome, "VALOR: " + valor, "CODIGO: " + codigo, "URLIMOVEL: " + urlImovel, "DETALHES IMOVEL: " + detalhesImovel);
-    }
-
-    await browser.close();
-}
-
-main();
-
-/* const urlalvo = 'https://www.vivareal.com.br/imovel/fazenda---sitio-3-quartos-serra-da-cantareira-zona-norte-sao-paulo-com-garagem-60000m2-venda-RS1200000-id-2572161422/';
-
-let detalhesImovel = [];
-
-const wspg = async () => {
-
-    const browser = await puppeteer.launch({
-        headless: true
-    });
-
-    const page = await browser.newPage();
-    await page.goto(urlalvo);
-    await page.waitForTimeout(3000);
-    const nomeBruto = await page.$eval('.title__title', (el) => el.textContent);
-    const nome = nomeBruto.trim();
-    const valor = await page.$eval('.price__price-info', (el) => el.textContent);
-    const codigoBruto = await page.$eval('.title__code', (el) => el.textContent);
-    const codigo = codigoBruto.slice(5);
-    const urlImovel = urlalvo;
-    const detalhesArray = await page.$$eval('.features__item', li => {
-        return li.map(text => text.title +' '+ text.textContent.trim());
-    });
-
-    for (let detalhesElement of detalhesArray) {
         
-        detalhesImovel.push(detalhesElement);
+        const busca = await Propertie.find({ codigo: codigo });
+        
+        if(!busca) {
+            const newPropertie = await Propertie.create({
+                nome,
+                urlImovel,
+                valor,
+                codigo,
+                detalhesImovel,
+            });
+        
+            if(newPropertie) {
+                console.log("Dado Inserido: ", newPropertie);
+            } else {
+                console.log("Deu erro...");
+            }
+        } else {
+            console.log(`IMÓVEL COD: ${codigo} JÁ ESTÁ CADASTRADO`);
+        }
     }
-
-    await console.log("NOME: " + nome, "VALOR: " + valor, "CODIGO: " + codigo, "URLIMOVEL: " + urlImovel, "DETALHES IMOVEL: " + detalhesImovel);
-
-
-
 
     await browser.close();
 
 };
 
-wspg(); */
+main();

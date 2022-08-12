@@ -1,4 +1,4 @@
-const puppeteer = require('puppeteer');
+import puppeteer from 'puppeteer';
 
 const urlalvo = "https://www.vivareal.com.br/venda/sp/sao-paulo/granja_comercial/#area-desde=20000";
 
@@ -32,4 +32,4 @@ async function linksPg(linkPesquisa) {
 
 // linkImoveis(urlalvo);
 
-module.exports = linksPg;
+export default linksPg;
